@@ -3,7 +3,10 @@
 ## Login Credentials
 
 Username: ```sandy```
+
 Password: ```Sandy'sPassword!```
+
+*Yes, if you find Sandy's laptop now, you can log in to it.  This is intentional.*
 
 ## Development
 
