@@ -39,17 +39,19 @@ Running: ```./run.sh```
 
 ## Install Commands
 
-  * `sudo apt-get install git build-essential curl openssh-server libusb-dev cmake freeglut3-dev screen sl`
-  * `cd ~`
-  * `mkdir Dev`
-  * `git clone https://github.com/rizend/sandy Dev`
-  * `cd Dev`
-  * `mkdir libs; cd libs`
-  * `git clone https://github.com/OpenKinect/libfreenect`
-  * `cd libfreenect`
-  * `mkdir build; cd build`
-  * `cmake -L ..`
-  * `make`
+
+    sudo apt-get install git build-essential curl openssh-server libusb-dev cmake freeglut3-dev screen sl
+    cd ~
+    mkdir Dev
+    git clone https://github.com/rizend/sandy Dev
+    cd Dev
+    mkdir libs; cd libs
+    git clone https://github.com/OpenKinect/libfreenect
+    cd libfreenect
+    mkdir build; cd build
+    cmake -L ..
+    make
+
 
 ## TODO
 
