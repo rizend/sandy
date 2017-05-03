@@ -24,7 +24,7 @@ Running: ```./run.sh```
  * updateDrive.sh : shell script that pulls the Sandy folder from google drive
  * libs/ : directory containing any necessary libraries or java library wrappers
    * freenect.jar : sym-link to the compiled libfreenect java wrapper with dependencies included
-   * libfreenect/ : the libfreenect library
+   * libfreenect/ : the [libfreenect](https://github.com/OpenKinect/libfreenect "OpenKinect/libfreenect on Github") library
      * wrappers/java/
        * the java wrapper for libfreenect
  * Sandy/ : Sandy java source and compiled class files
@@ -36,6 +36,20 @@ Running: ```./run.sh```
    * OfflineKinect.java : An implementation of KinectReference used in offline mode.
    * KinectFullWindow.java : Implements the actual Swing GUI on the last available display.
    * RoyMenu.java : A Menu Applet that doesn't act as a menu as of yet.
+
+## Install Commands
+
+  * `sudo apt-get install git build-essential curl openssh-server libusb-dev cmake freeglut3-dev screen sl`
+  * `cd ~`
+  * `mkdir Dev`
+  * `git clone https://github.com/rizend/sandy Dev`
+  * `cd Dev`
+  * `mkdir libs; cd libs`
+  * `git clone https://github.com/OpenKinect/libfreenect`
+  * `cd libfreenect`
+  * `mkdir build; cd build`
+  * `cmake -L ..`
+  * `make`
 
 ## TODO
 
