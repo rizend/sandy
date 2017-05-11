@@ -2,6 +2,7 @@ package Sandy;
 
 import org.openkinect.freenect.*;
 import java.awt.Graphics2D;
+import Sandy.depthSmoother.AverageSmoother;
 import static java.lang.System.out;
 
 //@see: https://github.com/OpenKinect/libfreenect/blob/ec0b75dd0ee6d510294335cc4cdfee9375a4bde3/wrappers/java/src/main/java/org/openkinect/freenect/Device.java
@@ -106,6 +107,8 @@ public class KinectLoad implements LogHandler {
 		y-=150;
 		if(x>=0 && y>=0 && x<640 && y<480) {
 			System.out.println("("+x+","+y+") => "+dHandler.getDepths()[x][y]);
+			if(menu!=null)
+				menu.click(x,y);
 		}
 	}
 
@@ -135,7 +138,7 @@ public class KinectLoad implements LogHandler {
 		//use the context to open the given device:
 		device = ctx.openDevice(deviceNumber);
 		//construct a new Depth Handler
-		dHandler = new KinectDepthHandler();
+		dHandler = new AverageSmoother(new KinectDepthHandler());
 		//set the depth format to 16 bits per pixel in millimeters (the onFrameRecieved callback gets all null values if this is not set)
 		device.setDepthFormat(DepthFormat.MM);
 		//Make the kinect's led blink se we know that we are connected

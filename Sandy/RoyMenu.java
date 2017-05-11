@@ -1,8 +1,7 @@
 package Sandy;
 
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.awt.Color;
+import java.awt.image.*;
+import java.awt.*;
 
 public class RoyMenu implements KinectMenuApplet {
 	KinectReference kr;
@@ -48,7 +47,8 @@ public class RoyMenu implements KinectMenuApplet {
 		for(short[] row : mms) {
 			for(short s : row) {
 				val = s&0xffff;
-				rgbArray[i]=rgb(val>800&&val<1200 ? ((val-800)*255)/400 : 0, val<600 ? 0 : 255, val/10);
+				val = val>950&&val<1100 ? ((val-950)) : 0;
+				rgbArray[i]=rgb(val<50 ? val*255/50 : 0, val<100 && val>=50 ? (val-50)*255/50 : 0, val>=100 ? (val-100)*255/50 : 0);
 				i++;
 			}
 		}
@@ -74,6 +74,16 @@ public class RoyMenu implements KinectMenuApplet {
 
 	final static int DRAW_WIDTH = LEFT_BAR_START-RIGHT_BAR_START;
 
+	public void click(int x, int y) {
+	}
+
+	int[] byteDraw = new int[640*480*2+640*480];
+
+	static int RIGHT_CUT = 100;
+	static int LEFT_CUT = 130;
+	static int TOP_CUT = 40;
+	static int BOTTOM_CUT = 100;
+
 	public void setImage(Graphics2D g, int[] colors) {
 		//flip colors:
 		int tmp;
@@ -83,18 +93,29 @@ public class RoyMenu implements KinectMenuApplet {
 			colors[i]=tmp;
 		}
 
-		int[] draw = new int[DRAW_WIDTH*SCREEN_HEIGHT];
+		//int[] draw = new int[DRAW_WIDTH*SCREEN_HEIGHT];
+		//System.out.println(DRAW_WIDTH+"*"+SCREEN_HEIGHT); 890*768
 
 		int val = rgb(255,50,255);
 
-		for(int i = 0; i<draw.length; i++) {
-			draw[i]=val;
+		for(int i = 0; i<byteDraw.length; i++) {
+			byteDraw[i]=0xff;
+		}
+		int n = 0;
+		
+		for(int i = 0; i<colors.length; i++) {
+			byteDraw[n++]=(colors[i]&0xff0000)>>16;
+			byteDraw[n++]=(colors[i]&0xff00)>>8;
+			byteDraw[n++]=(colors[i]&0xff);
+			//byteDraw[n++]=0xffffffff;//(colors[i]&0xff000000)>>24;
 		}
 
 		//draw the array
-		BufferedImage b = new BufferedImage(DRAW_WIDTH, SCREEN_HEIGHT, BufferedImage.TYPE_INT_ARGB);
-		b.setRGB(0, 0, DRAW_WIDTH, SCREEN_HEIGHT, draw, 0, DRAW_WIDTH);
-		g.drawImage(b, RIGHT_BAR_START, 0, null);
+		/*BufferedImage b = new BufferedImage(DRAW_WIDTH, SCREEN_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+		b.setRGB(0, 0, DRAW_WIDTH, SCREEN_HEIGHT, draw, 0, DRAW_WIDTH);//b*/
+
+		g.drawImage(getImageFromArray(byteDraw), RIGHT_BAR_START, 0, LEFT_BAR_START, SCREEN_HEIGHT, LEFT_CUT, TOP_CUT,640-RIGHT_CUT,480-BOTTOM_CUT, null);
+		//g.getRaster().setPixels(0,0,640,480,byteDraw);
 
 
 		//set the no-draw bars on either side
@@ -102,7 +123,12 @@ public class RoyMenu implements KinectMenuApplet {
 		g.fillRect(0,0,RIGHT_BAR_START, SCREEN_HEIGHT);
 		g.fillRect(LEFT_BAR_START, 0, SCREEN_WIDTH-LEFT_BAR_START, SCREEN_HEIGHT);
 	}
-
+    BufferedImage image = new BufferedImage(640, 480, BufferedImage.TYPE_INT_RGB);
+    WritableRaster raster = (WritableRaster) image.getRaster();
+	public Image getImageFromArray(int[] pixels) {
+            raster.setPixels(0,0,640,480,pixels);
+            return image;
+        }
 	int flashColor = rgb(0,0,0);
 
 	public static int rgb(int r, int g, int b) {

@@ -21,6 +21,8 @@ public interface KinectApplet {
 	*/
 	public boolean draw(Graphics2D g);
 
+	public void click(int x, int y);
+
 	/**
 	* Forcibly stops the applet.
 	* The applet can safely assume that it will not be asked to draw again unless its setup method is called again.
