@@ -96,7 +96,7 @@ public class RoyMenu implements KinectMenuApplet {
 		//int[] draw = new int[DRAW_WIDTH*SCREEN_HEIGHT];
 		//System.out.println(DRAW_WIDTH+"*"+SCREEN_HEIGHT); 890*768
 
-		int val = rgb(255,50,255);
+		int val = rgb(250,50,250);
 
 		for(int i = 0; i<byteDraw.length; i++) {
 			byteDraw[i]=0xff;

@@ -1,3 +1,3 @@
 #!/bin/sh
-java -cp ./libs/freenect.jar:. Sandy.KinectLoad
+strace -o/tmp/k java -cp ./libs/freenect.jar:. Sandy.KinectLoad
 ~/.screenlayout/sandyDefault.sh

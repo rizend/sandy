@@ -4,7 +4,7 @@
 
 Username: ```sandy```
 
-Password: ```Sandy'sPassword!```
+Password: ```sandy```
 
 *Yes, if you find Sandy's laptop now, you can log in to it.  This is intentional.*
 
@@ -40,7 +40,7 @@ Running: ```./run.sh```
 ## Install Commands
 
 
-    sudo apt-get install git build-essential curl openssh-server libusb-dev cmake freeglut3-dev screen sl
+    sudo apt-get install git build-essential curl openssh-server libusb-dev cmake freeglut3-dev screen sl libxmu-dev libxi-dev libusb-1.0.0-dev g++ maven openjdk-7-jdk
     cd ~
     mkdir Dev
     git clone https://github.com/rizend/sandy Dev
@@ -51,7 +51,11 @@ Running: ```./run.sh```
     mkdir build; cd build
     cmake -L ..
     make
-
+    sudo make install
+    cd ../wrappers/java
+    make
+    cd ~/Dev/libs
+    ln -s ./libfreenect/wrappers/java/target/freenect-1.0-jar-with-dependencies.jar ./freenect.jar
 
 ## TODO
 
