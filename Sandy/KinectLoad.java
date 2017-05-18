@@ -53,27 +53,27 @@ public class KinectLoad implements LogHandler {
 	}
 
 	public void loadApplet(KinectApplet ka) {
-		if(next!=null)
+		if(next==null)
 			next=ka;
 	}
+
+	boolean handRaised = false;
 
 	private void runDrawCycle() {
 		if(next!=null) {
 			if(current!=null)
-				current.remove();
+				current.exit();
 
 			if(dHandler==null)
 				System.out.println("??");
 
+			next.setup(dHandler);
 			if(next instanceof KinectMenuApplet)
-				((KinectMenuApplet)next).setup(dHandler, this);
-			else
-				next.setup(dHandler);
+				((KinectMenuApplet)next).setupMenu(this);
 
 			current = next;
 			next = null;
 		}
-
 		if(current==null) {
 			loadApplet(menu);
 			return;
@@ -82,6 +82,18 @@ public class KinectLoad implements LogHandler {
 		if(gui!=null) {
 			gui.repaint();
 		}
+
+		int avg = current.getAverageDepth();
+		if(avg>=0) {
+			if(handRaised) {
+				if(avg>800) {
+					handRaised = false;
+				}
+			} else if(avg<700) {
+				handRaised = true;
+				menu.onHandRaise();
+			}
+		}
 	}
 
 	void paintCB(Graphics2D g2d) {
@@ -89,7 +101,7 @@ public class KinectLoad implements LogHandler {
 			return;
 
 		try {
-			if(!current.draw(g2d)) {
+			if(!current._draw(g2d)) {
 				loadApplet(menu);
 			}
 		} catch(Exception e) {
@@ -107,8 +119,8 @@ public class KinectLoad implements LogHandler {
 		y-=150;
 		if(x>=0 && y>=0 && x<640 && y<480) {
 			System.out.println("("+x+","+y+") => "+dHandler.getDepths()[x][y]);
-			if(menu!=null)
-				menu.click(x,y);
+			if(current!=null)
+				current.click(x,y);
 		}
 	}
 
@@ -125,6 +137,10 @@ public class KinectLoad implements LogHandler {
 		}
 	}
 
+	public KinectApplet getCurrent() {
+		return current;
+	}
+
 	private void initDevice() {
 		if(offlineMode) {
 			dHandler = (new OfflineKinect()).reset();
@@ -138,7 +154,7 @@ public class KinectLoad implements LogHandler {
 		//use the context to open the given device:
 		device = ctx.openDevice(deviceNumber);
 		//construct a new Depth Handler
-		dHandler = new AverageSmoother(new KinectDepthHandler());
+		dHandler = new KinectDepthHandler();//new AverageSmoother(new KinectDepthHandler());
 		//set the depth format to 16 bits per pixel in millimeters (the onFrameRecieved callback gets all null values if this is not set)
 		device.setDepthFormat(DepthFormat.MM);
 		//Make the kinect's led blink se we know that we are connected
