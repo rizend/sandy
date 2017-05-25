@@ -13,7 +13,8 @@ public class RoyMenu extends KinectMenuApplet {
 	KinectApplet[] applets = new KinectApplet[] {
 		this,
 		new JustShowAverage(),
-		new SimpleTopography()
+		new SimpleTopography(),
+        new Drawing()
 	};
 
 	public void onHandRaise() {
