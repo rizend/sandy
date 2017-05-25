@@ -24,6 +24,7 @@ public abstract class KinectApplet {
 	* The applet should remove its window from the screen as quickly as possible and block until this is finished.
 	*/
 	protected void onRemove() {}
+	protected void onSetup() {}
 	
 	protected void exit() {
 		if(running) {
@@ -32,6 +33,7 @@ public abstract class KinectApplet {
 		}
 	}
 
+	int setups = 0;
 	/**
 	* Sets up the applet so that it is ready to begin drawing.
 	* @param kr a KinectReference which can be used to fetch the depth values for the box.  Ought to be stored for use in draw.
@@ -39,6 +41,9 @@ public abstract class KinectApplet {
 	public final void setup(KinectReference kr) {
 		System.out.println("Setup "+getName());
 		this.kr = kr;
+		running = true;
+		onSetup();
+		setups++;
 	}
 
 	boolean running = true;
@@ -62,6 +67,7 @@ public abstract class KinectApplet {
 		avgDepth = sum/len;
 
 		draw(mms, g);
+		drawSideBars(g);
 		return running;
 	}
 
@@ -93,10 +99,11 @@ public abstract class KinectApplet {
 
 	int[] byteDraw = new int[640*480*2+640*480];
 
+	//where to cut off th ekinect data:
 	static int RIGHT_CUT = 100;
 	static int LEFT_CUT = 130;
-	static int TOP_CUT = 40;
-	static int BOTTOM_CUT = 100;
+	static int TOP_CUT = 50;//50
+	static int BOTTOM_CUT = 30;//40
 
 	public final void setImage(Graphics2D g, int[] colors) {
 		//flip colors:
@@ -124,37 +131,50 @@ public abstract class KinectApplet {
 			//byteDraw[n++]=0xffffffff;//(colors[i]&0xff000000)>>24;
 		}
 
-		//draw the array
-		/*BufferedImage b = new BufferedImage(DRAW_WIDTH, SCREEN_HEIGHT, BufferedImage.TYPE_INT_ARGB);
-		b.setRGB(0, 0, DRAW_WIDTH, SCREEN_HEIGHT, draw, 0, DRAW_WIDTH);//b*/
-
 		g.drawImage(getImageFromArray(byteDraw), RIGHT_BAR_START, 0, LEFT_BAR_START, SCREEN_HEIGHT, LEFT_CUT, TOP_CUT,640-RIGHT_CUT,480-BOTTOM_CUT, null);
-		//g.getRaster().setPixels(0,0,640,480,byteDraw);
 
-
-		//set the no-draw bars on either side
+	}
+	public final void drawSideBars(Graphics2D g) {
+		if(flashEnd>0 && System.currentTimeMillis()>flashEnd) {
+			flashEnd = 0;
+			sidebarColor = resetColor;
+		}
+		//set the no-draw bars on either side, could be used to do a quick flash
 		g.setColor(color(sidebarColor));
 		g.fillRect(0,0,RIGHT_BAR_START, SCREEN_HEIGHT);
 		g.fillRect(LEFT_BAR_START, 0, SCREEN_WIDTH-LEFT_BAR_START, SCREEN_HEIGHT);
 	}
 
-    BufferedImage image = new BufferedImage(640, 480, BufferedImage.TYPE_INT_RGB);
-    WritableRaster raster = (WritableRaster) image.getRaster();
-	public final Image getImageFromArray(int[] pixels) {
+    private BufferedImage image = new BufferedImage(640, 480, BufferedImage.TYPE_INT_RGB);
+    private WritableRaster raster = (WritableRaster) image.getRaster();
+	private final Image getImageFromArray(int[] pixels) {
             raster.setPixels(0,0,640,480,pixels);
             return image;
     }
 
 	int sidebarColor = rgb(0,0,0);
+	int resetColor = sidebarColor;
+	long flashEnd = 0;
 	protected final void setSidebarColor(int color) {
 		sidebarColor = color;
 	}
 	protected final void setSidebarColor(int r, int g, int b) {
 		setSidebarColor(rgb(r,g,b));
 	}
+	protected final void flashColor(int color, long flashLength) {
+		setSidebarColor(color);
+		flashEnd = System.currentTimeMillis()+flashLength;
+	}
 
 	public final static int rgb(int r, int g, int b) {
 		return (   0xff <<24) |
+			   ((r&0xff)<<16) | 
+			   ((g&0xff)<<8)  |
+			   (b&0xff);
+	}
+
+	public final static int rgba(int r, int g, int b, int a) {
+		return ((a&0xff)<<24) |
 			   ((r&0xff)<<16) | 
 			   ((g&0xff)<<8)  |
 			   (b&0xff);
