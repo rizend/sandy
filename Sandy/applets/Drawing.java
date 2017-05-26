@@ -9,8 +9,8 @@ public class Drawing extends KinectApplet {
 
 		int[] rgbDrawArray = new int[640*480];//array of pixels (in RGB, red green blue, format) to draw to the screen, red, greeg, and blue values are 8 bit unsigned values packed into a 4 byte integer, int
 
-		int color1 = rgb(255, 0, 0) //Red
-		int color2 = rgb(0, 0, 255) //Blue
+		int color1 = rgb(255, 0, 0); //Red
+		int color2 = rgb(0, 0, 255); //Blue
 
 		int val;
 
@@ -23,5 +23,7 @@ public class Drawing extends KinectApplet {
 		}
 
 		setImage(g, rgbDrawArray);
+
+		g.drawString("Jason's drawing", 100, 100);
 	}
 }

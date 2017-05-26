@@ -16,10 +16,10 @@ public class RoyMenu extends KinectMenuApplet {
 
 	KinectApplet[] applets = new KinectApplet[] {
 		this,
+        new Drawing(),
 		new DynamicTopography(),
 		new JustShowAverage(),
 		new SimpleTopography(800),
-        new Drawing()
 	};
 
 	static int loadColor = rgb(50, 150, 255);
