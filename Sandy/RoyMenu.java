@@ -19,6 +19,7 @@ public class RoyMenu extends KinectMenuApplet {
 		new DynamicTopography(),
 		new JustShowAverage(),
 		new SimpleTopography(800),
+        new Drawing()
 	};
 
 	static int loadColor = rgb(50, 150, 255);
